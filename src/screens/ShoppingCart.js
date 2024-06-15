@@ -1,11 +1,11 @@
-import { Text, FlatList, View, StyleSheet, Pressable } from 'react-native';
-import CartListItem from '../components/CartListItem';
-import { useSelector } from 'react-redux';
+import { Text, FlatList, View, StyleSheet, Pressable } from "react-native";
+import CartListItem from "../components/CartListItem";
+import { useSelector } from "react-redux";
 import {
   selectDeliveryPrice,
   selectSubtotal,
   selectTotal,
-} from '../store/cartSlice';
+} from "../store/cartSlice";
 
 const ShoppingCartTotals = () => {
   const subtotal = useSelector(selectSubtotal);
@@ -51,36 +51,36 @@ const styles = StyleSheet.create({
   totalsContainer: {
     margin: 20,
     paddingTop: 10,
-    borderColor: 'gainsboro',
+    borderColor: "gainsboro",
     borderTopWidth: 1,
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginVertical: 2,
   },
   text: {
     fontSize: 16,
-    color: 'gray',
+    color: "gray",
   },
   textBold: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 
   button: {
-    position: 'absolute',
-    backgroundColor: 'black',
+    position: "absolute",
+    backgroundColor: "black",
     bottom: 30,
-    width: '90%',
-    alignSelf: 'center',
+    width: "90%",
+    alignSelf: "center",
     padding: 20,
     borderRadius: 100,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: 'white',
-    fontWeight: '500',
+    color: "white",
+    fontWeight: "500",
     fontSize: 16,
   },
 });
