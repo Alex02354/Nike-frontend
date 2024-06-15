@@ -1,32 +1,38 @@
-import { useNavigation } from '@react-navigation/native';
 import {
   StyleSheet,
-  Text,
-  View,
-  Image,
   FlatList,
+  Image,
   Pressable,
-} from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import { productsSlice } from '../store/productsSlice';
+  ActivityIndicator,
+  Text,
+} from "react-native";
+import { useDispatch } from "react-redux";
+import { useProducts } from "../hooks/useProducts"; // Adjust the import based on your file structure
 
 const ProductsScreen = ({ navigation }) => {
-  // const navigation = useNavigation();
-
   const dispatch = useDispatch();
+  const { data, isLoading, error } = useProducts();
 
-  const products = useSelector((state) => state.products.products);
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
+  if (error) {
+    console.error(error); // Log the error to the console
+    return <Text>Error fetching products.</Text>;
+  }
+
+  // Extract the array of products from the response
+  const products = data?.data ?? [];
 
   return (
     <FlatList
       data={products}
+      keyExtractor={(item) => item._id.toString()}
       renderItem={({ item }) => (
         <Pressable
           onPress={() => {
-            // update selected product
-            dispatch(productsSlice.actions.setSelectedProduct(item.id));
-
-            navigation.navigate('Product Details');
+            navigation.navigate("Product Details", { id: item._id });
           }}
           style={styles.itemContainer}
         >
@@ -40,11 +46,11 @@ const ProductsScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   itemContainer: {
-    width: '50%',
+    width: "50%",
     padding: 1,
   },
   image: {
-    width: '100%',
+    width: "100%",
     aspectRatio: 1,
   },
 });
