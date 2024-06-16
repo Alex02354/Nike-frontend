@@ -41,6 +41,8 @@ export const cartSlice = createSlice({
   },
 });
 
+export const { addCartItem, changeQuantity, clear } = cartSlice.actions;
+
 export const selectNumberOfItems = (state) => state.cart.items.length;
 
 export const selectSubtotal = (state) =>
@@ -62,3 +64,5 @@ export const selectTotal = createSelector(
   selectDeliveryPrice,
   (subtotal, delivery) => subtotal + delivery
 );
+
+export default cartSlice.reducer;

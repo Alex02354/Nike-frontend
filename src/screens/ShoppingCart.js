@@ -1,11 +1,23 @@
-import { Text, FlatList, View, StyleSheet, Pressable } from "react-native";
+// src/screens/ShoppingCart.js
+import React from "react";
+import {
+  Text,
+  FlatList,
+  View,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import CartListItem from "../components/CartListItem";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   selectDeliveryPrice,
   selectSubtotal,
   selectTotal,
+  clear,
 } from "../store/cartSlice";
+import { useNewOrder } from "../hooks/useNewOrder";
 
 const ShoppingCartTotals = () => {
   const subtotal = useSelector(selectSubtotal);
@@ -31,7 +43,37 @@ const ShoppingCartTotals = () => {
 };
 
 const ShoppingCart = () => {
+  const subtotal = useSelector(selectSubtotal);
+  const deliveryFee = useSelector(selectDeliveryPrice);
+  const total = useSelector(selectTotal);
   const cartItems = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
+
+  const { mutate: createOrder, data, error, isLoading } = useNewOrder();
+
+  const onCreateOrder = () => {
+    const orderData = {
+      items: cartItems,
+      subtotal,
+      deliveryFee,
+      total,
+      customer: {
+        name: "Vadim",
+        address: "My home",
+        email: "vadim@gmail.com",
+      },
+    };
+
+    createOrder(orderData, {
+      onSuccess: () => {
+        Alert.alert("Order has been submitted");
+        dispatch(clear());
+      },
+      onError: (error) => {
+        Alert.alert("Error creating order", error.message);
+      },
+    });
+  };
 
   return (
     <>
@@ -40,9 +82,12 @@ const ShoppingCart = () => {
         renderItem={({ item }) => <CartListItem cartItem={item} />}
         ListFooterComponent={ShoppingCartTotals}
       />
-      <Pressable style={styles.button}>
-        <Text style={styles.buttonText}>Checkout</Text>
+      <Pressable onPress={onCreateOrder} style={styles.button}>
+        <Text style={styles.buttonText}>
+          Checkout {isLoading && <ActivityIndicator />}
+        </Text>
       </Pressable>
+      {error && <Text style={styles.errorText}>Error: {error.message}</Text>}
     </>
   );
 };
@@ -67,7 +112,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
   },
-
   button: {
     position: "absolute",
     backgroundColor: "black",
@@ -82,6 +126,11 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "500",
     fontSize: 16,
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginTop: 10,
   },
 });
 

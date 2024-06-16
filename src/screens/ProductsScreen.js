@@ -37,6 +37,7 @@ const ProductsScreen = ({ navigation }) => {
           style={styles.itemContainer}
         >
           <Image source={{ uri: item.image }} style={styles.image} />
+          <Text>{item.name}</Text>
         </Pressable>
       )}
       numColumns={2}
